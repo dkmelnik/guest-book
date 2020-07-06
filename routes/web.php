@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::get('/', 'indexController@index');
+
+Route::prefix('api')->group(function () {
+    Route::prefix('send')->group(function (){
+        Route::put('/', 'SendController@send');
+    });
 });
