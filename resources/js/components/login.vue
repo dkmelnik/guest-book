@@ -1,6 +1,14 @@
 <template>
     <section class="login-container">
-        <div class="container">
+        <section class="container">
+            <div v-for="post in posts">
+                <div>
+                    {{post.user_id ? post.user.name : 'Анонимус'}}
+                </div>
+                {{post.message}}
+            </div>
+        </section>
+        <div class="container make_comment">
             <h1 class="title">Оставьте ваш комментарий</h1>
 
             <div v-if="errors" style="margin: 10px 0">
@@ -13,26 +21,19 @@
                 </b-message>
             </div>
 
-            <b-field label="Логин" :type="user.name.state" :message="user.name.text">
-                <b-input v-model="user.name.value" :class="user.name.class" maxlength="30"></b-input>
-            </b-field>
-
-            <b-field label="Email" :type="user.email.state" :message="user.email.text">
-                <b-input type="email" v-model="user.email.value" :class="user.email.class"
-                         maxlength="255"></b-input>
-            </b-field>
-
-            <b-field label="Message" :type="user.message.state" :message="user.message.text">
-                <b-input maxlength="200" type="textarea" v-model="user.message.value"
-                         :class="user.message.class"></b-input>
+            <b-field label="Комментарий" :type="post.message.state" :message="post.message.text">
+                <b-input maxlength="200" type="textarea" v-model="post.message.value"
+                         :class="post.message.class"></b-input>
             </b-field>
             <div class="button_send">
-                <b-button type="is-link" @click="sendAction">Войти</b-button>
+                <b-button type="is-link" @click="sendAction">Отправить</b-button>
             </div>
             <b-loading :active.sync="load"></b-loading>
         </div>
     </section>
 </template>
+
+
 
 <script>
     export default {
@@ -41,19 +42,7 @@
         },
         data() {
             return {
-                user: {
-                    name: {
-                        value: '',
-                        text: 'Иванов Иван Иванович',
-                        state: '',
-                        class: '',
-                    },
-                    email: {
-                        value: '',
-                        text: 'ivan@mail.ru',
-                        state: '',
-                        class: '',
-                    },
+                post: {
                     message: {
                         value: '',
                         text: 'Ваш комментарий',
@@ -61,6 +50,7 @@
                         class: '',
                     },
                 },
+                posts: [],
                 load: false,
                 register: false,
             }
@@ -68,10 +58,8 @@
         methods: {
             sendAction: function () {
                 this.load = true;
-                axios.put('api/send', {
-                    login: this.user.name.value,
-                    password: this.user.email.value,
-                    name: this.user.message.value
+                axios.put('posts', {
+                    message: this.post.message.value
                 }).then(response => {
                     this.responseSuccessAction(response);
                 }).catch(response => {
@@ -81,15 +69,15 @@
             responseErrorAction: function (response) {
                 this.load = false;
                 let error_fields = response.response.data.errors;
-                for (let key in this.user) {
-                    this.user[key].text = '';
-                    this.user[key].state = 'is-success';
-                    this.user[key].class = '';
+                for (let key in this.post) {
+                    this.post[key].text = '';
+                    this.post[key].state = 'is-success';
+                    this.post[key].class = '';
                 }
                 for (let key1 in error_fields) {
-                    this.user[key1].text = error_fields[key1][0];
-                    this.user[key1].state = 'is-danger';
-                    this.user[key1].class = 'animated shake';
+                    this.post[key1].text = error_fields[key1][0];
+                    this.post[key1].state = 'is-danger';
+                    this.post[key1].class = 'animated shake';
                 }
                 this.$buefy.notification.open({
                     message: 'Проверьте правильность формы',
@@ -99,11 +87,12 @@
             },
             responseSuccessAction: function (response) {
                 this.load = false;
-                for (let key in this.user) {
-                    this.user[key].text = '';
-                    this.user[key].state = 'is-success';
-                    this.user[key].class = '';
+                for (let key in this.post) {
+                    this.post[key].text = '';
+                    this.post[key].state = 'is-success';
+                    this.post[key].class = '';
                 }
+                this.post.message.value = '';
                 if (response.data.error) {
                     this.$buefy.notification.open({
                         message: response.data.msg,
@@ -120,8 +109,23 @@
                 if (response.data.data.link) {
                     window.location.href = response.data.data.link;
                 }
+                this.updatePosts();
                 this.reset();
+            },
+            updatePosts: function () {
+                axios.get('posts', {}
+                ).then(response => {
+                        this.posts = response.data;
+                    }
+                )
             }
+
+        },
+        mounted() {
+            this.updatePosts();
+            setInterval( () => {
+                this.updatePosts()
+            }, 1000)
         }
     }
 </script>
@@ -134,5 +138,8 @@
         .container {
             max-width: 500px;
         }
+    }
+    .make_comment{
+
     }
 </style>

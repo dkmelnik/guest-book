@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\Post\PostService;
 use Illuminate\Support\ServiceProvider;
 
-class AddPost extends ServiceProvider
+class PostProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -13,8 +14,8 @@ class AddPost extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('AddPost', function ($app) {
-            return new AddPost($app);
+        $this->app->singleton('Post', function ($app) {
+            return new PostService($app);
         });
     }
 

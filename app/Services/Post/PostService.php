@@ -1,10 +1,14 @@
 <?php
 
 
-namespace App\Services\AddPost;
+namespace App\Services\Post;
 
 
-class AddPost
+use App\Models\Posts\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+
+class PostService
 {
     protected $app;
 
@@ -13,16 +17,23 @@ class AddPost
         $this->app = $app;
 
     }
+
     public function handlerPost(Request $request)
     {
-        dd($request);
+
         //Валидируем запрос
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|max:255',
             'message' => 'required|max:255'
         ]);
 
+        $Post = Post::create($request->all());
 
+        if (!$Post instanceof Post) {
+            return false;
+        }
+        return true;
     }
+
+
+
 }

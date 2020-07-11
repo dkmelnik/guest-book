@@ -15,8 +15,23 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', 'indexController@index');
 
-Route::prefix('api')->group(function () {
-    Route::prefix('send')->group(function (){
-        Route::put('/', 'SendController@send');
+Route::prefix('posts')->group(function () {
+    Route::put('/', 'PostsController@send');
+    Route::get('/', 'PostsController@getPosts')->name('posts');
+});
+
+
+/**
+ * Чтобы сделать редирект тебе нужно роутам прописать имя, например ->name('index') или ->name('auth.post')
+ * redirect()->route('posts');
+ */
+
+
+Route::prefix('auth')->group(function () {
+//    Route::get('/') TODO: Страница авторизации
+//    Route::post('/') TODO: Действие авторизации
+    Route::prefix('register')->group(function () {
+//      Route::get('/') TODO: Регистрации
+//      Route::post('/') TODO: Действие регистрации
     });
 });
