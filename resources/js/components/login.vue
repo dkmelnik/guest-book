@@ -1,34 +1,40 @@
 <template>
-    <section class="login-container">
-        <section class="container">
-            <div v-for="post in posts">
-                <div>
+    <section class="login-container" id="container">
+        <section class="container posts">
+            <h1  class="title">Комментарии ({{posts.length}})</h1>
+            <div v-for="post in posts" class="post">
+                <div class="date">
+                    {{post.created_at}}
+                </div>
+                <div class="name">
                     {{post.user_id ? post.user.name : 'Анонимус'}}
                 </div>
-                {{post.message}}
+                <div class="message">
+                    {{post.message}}
+                </div>
+
             </div>
         </section>
-        <div class="container make_comment">
-            <h1 class="title">Оставьте ваш комментарий</h1>
-
-            <div v-if="errors" style="margin: 10px 0">
-                <b-message v-for="(error, index) in errors"
-                           title="Ошибка!"
-                           type="is-danger"
-                           :key="index"
-                           aria-close-label="Закрыть сообщение">
-                    {{error}}
-                </b-message>
+        <div class="fixed">
+            <div class="container make_comment">
+                <div v-if="errors" style="margin: 10px 0">
+                    <b-message v-for="(error, index) in errors"
+                               title="Ошибка!"
+                               type="is-danger"
+                               :key="index"
+                               aria-close-label="Закрыть сообщение">
+                        {{error}}
+                    </b-message>
+                </div>
+                <b-field label="Оставьте Ваш комментарий" :type="post.message.state" :message="post.message.text">
+                    <b-input maxlength="200" type="textarea" v-model="post.message.value"
+                             :class="post.message.class"></b-input>
+                </b-field>
+                <div class="button_send">
+                    <b-button type="is-link" @click="sendAction">Отправить</b-button>
+                </div>
+                <b-loading :active.sync="load"></b-loading>
             </div>
-
-            <b-field label="Комментарий" :type="post.message.state" :message="post.message.text">
-                <b-input maxlength="200" type="textarea" v-model="post.message.value"
-                         :class="post.message.class"></b-input>
-            </b-field>
-            <div class="button_send">
-                <b-button type="is-link" @click="sendAction">Отправить</b-button>
-            </div>
-            <b-loading :active.sync="load"></b-loading>
         </div>
     </section>
 </template>
@@ -119,9 +125,9 @@
                     }
                 )
             }
-
         },
         mounted() {
+            this.$el.scrollY = this.$el.clientHeight;
             this.updatePosts();
             setInterval( () => {
                 this.updatePosts()
@@ -136,10 +142,58 @@
         padding: 3rem 1.5rem;
 
         .container {
-            max-width: 500px;
+            max-width: 800px;
+            padding-left: 50px;
+            padding-right: 50px;
         }
     }
     .make_comment{
 
     }
+    .post{
+        padding: 26px 51px 36px;
+        box-sizing: border-box;
+        border: 1px solid #ececec;
+        margin-bottom: 32px;
+    }
+    .name {
+        font-size: 1.3333em;
+        line-height: 1.4em;
+        color: #333;
+        font-weight: 500;
+    }
+    .date {
+        font-size: .667em;
+        line-height: 1.3em;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+        color: #999;
+        margin-bottom: 10px;
+    }
+    .message{
+        line-height: 1.8em;
+        opacity: .75;
+        margin-bottom: 25px;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        background: white;
+    }
+    .fixed{
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: white;
+    }
+    .container.posts{
+        padding-bottom: 280px;
+    }
+    .make_comment{
+        padding-top: 30px;
+        padding-bottom: 30px;
+        -webkit-box-shadow: -1px -23px 28px 2px rgba(255,255,255,1);
+        -moz-box-shadow: -1px -23px 28px 2px rgba(255,255,255,1);
+        box-shadow: -1px -23px 28px 2px rgba(255,255,255,1);
+    }
 </style>
+
