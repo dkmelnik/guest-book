@@ -8,6 +8,6 @@ class indexController
 {
     public function index()
     {
-        return view('templates.login');
+        dd('test');
     }
 }

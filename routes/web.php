@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'indexController@index');
+Route::get('/', 'PostsController@index');
 
 Route::prefix('posts')->group(function () {
     Route::put('/', 'PostsController@send');
@@ -26,6 +26,11 @@ Route::prefix('posts')->group(function () {
  * redirect()->route('posts');
  */
 
+Route::get('/auth', 'AuthController@index');
+
+Route::prefix('auth')->group(function () {
+    Route::put('/', 'AuthController@auth');
+});
 
 Route::prefix('auth')->group(function () {
 //    Route::get('/') TODO: Страница авторизации
@@ -34,4 +39,10 @@ Route::prefix('auth')->group(function () {
 //      Route::get('/') TODO: Регистрации
 //      Route::post('/') TODO: Действие регистрации
     });
+});
+
+Route::get('/register', 'RegisterController@index');
+
+Route::prefix('register')->group(function () {
+    Route::put('/', 'RegisterController@register');
 });
