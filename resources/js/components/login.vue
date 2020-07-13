@@ -41,6 +41,7 @@
     export default {
         props: {
             errors: Array,
+            url: String
         },
         data() {
             return {
@@ -71,33 +72,15 @@
             },
             reset: function () {
                 this.user = {
-                    login: {
-                        value: '',
-                        text: 'Логин, телефон или email',
-                        state: '',
-                        class: '',
-                    },
                     password: {
                         value: '',
                         text: '',
                         state: '',
                         class: '',
                     },
-                    name: {
-                        value: '',
-                        text: 'Например: Иванов Иван Иванович',
-                        state: '',
-                        class: '',
-                    },
                     email: {
                         value: '',
                         text: 'Например: ivan@mail.ru',
-                        state: '',
-                        class: '',
-                    },
-                    phone: {
-                        value: '',
-                        text: '',
                         state: '',
                         class: '',
                     },

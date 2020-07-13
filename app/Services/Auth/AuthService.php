@@ -32,7 +32,6 @@ class AuthService
             //Возвращаем авторизованного пользователя если авторизация прошла успешна
             return Auth::user();
         }
-        dd($attempt);
         return false;
 
 

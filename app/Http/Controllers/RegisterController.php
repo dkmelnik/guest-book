@@ -23,11 +23,15 @@ class RegisterController extends Controller
 
         $user = $service->handlerRegister($request);
 
+        $addResponse = [
+            'link' => route('auth')
+        ];
 
         if (!$user instanceof User) {
             return $this->responseAPI('Ошибка при создании пользователя', true);
         }
 
-        return $this->responseAPI('Пользователь успешно создан', false, $user->toArray());
+        return $this->responseAPI('Пользователь успешно создан', false, array_merge($user->toArray(), $addResponse));
     }
+
 }

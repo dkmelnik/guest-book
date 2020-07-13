@@ -18,7 +18,6 @@ class PostsController extends Controller
 
     public function send(Request $request)
     {
-
         /** @var PostService $service */
         $service = app('Post');
         $created = $service->handlerPost($request);
@@ -35,4 +34,5 @@ class PostsController extends Controller
     {
         return Post::with('user')->get();
     }
+
 }
