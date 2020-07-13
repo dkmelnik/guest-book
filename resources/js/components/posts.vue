@@ -1,7 +1,7 @@
 <template>
     <section class="posts-container">
         <section class="container posts" ref="refPosts">
-            <h1  class="title">Комментарии ({{posts.length}})</h1>
+            <h1 class="title">Комментарии ({{posts.length}})</h1>
             <div v-for="post in posts" class="post">
                 <div class="date">
                     {{post.created_at}}
@@ -12,7 +12,11 @@
                 <div class="message">
                     {{post.message}}
                 </div>
+                <div v-if="auth.id === post.user_id" class="delete_post" @click="deletePost(post.id)">
 
+                    Удалить
+
+                </div>
             </div>
         </section>
         <div class="fixed">
@@ -45,7 +49,6 @@
         </div>
     </section>
 </template>
-
 
 
 <script>
@@ -136,8 +139,8 @@
             checkAuth: function () {
                 axios.post('auth', {}
                 ).then(response => {
-                    this.auth = response.data;
-                    console.log(this.auth);
+                        this.auth = response.data;
+                        console.log(this.auth);
                     }
                 )
             },
@@ -149,20 +152,21 @@
                     }
                 )
             },
-            deletePost: function () {
-                axios.get('posts/delete', {}
-                ).then(response => {
-                        console.log(response.data);
-                        location.reload();
+            deletePost: function ($id) {
+                console.log($id);
+                axios.put('posts/delete', {
+                        id: $id
                     }
-                )
+                ).then(response => {
+                    console.log(response);
+                })
             }
         },
         mounted() {
             this.$refs.refPosts.scrollTop = this.$refs.refPosts.scrollHeight;
             this.updatePosts();
             this.checkAuth();
-            setInterval( () => {
+            setInterval(() => {
                 this.updatePosts()
             }, 1000)
         }
@@ -180,21 +184,26 @@
             padding-right: 50px;
         }
     }
-    .make_comment{
+
+    .make_comment {
 
     }
-    .post{
+
+    .post {
         padding: 26px 51px 36px;
         box-sizing: border-box;
         border: 1px solid #ececec;
         margin-bottom: 32px;
+        position: relative;
     }
+
     .name {
         font-size: 1.3333em;
         line-height: 1.4em;
         color: #333;
         font-weight: 500;
     }
+
     .date {
         font-size: .667em;
         line-height: 1.3em;
@@ -203,7 +212,8 @@
         color: #999;
         margin-bottom: 10px;
     }
-    .message{
+
+    .message {
         line-height: 1.8em;
         opacity: .75;
         margin-bottom: 25px;
@@ -211,32 +221,46 @@
         margin-block-end: 1em;
         background: white;
     }
-    .fixed{
+
+    .fixed {
         position: fixed;
         left: 0;
         bottom: 0;
         width: 100%;
         background: white;
     }
-    .container.posts{
+
+    .container.posts {
         padding-bottom: 280px;
     }
-    .make_comment{
+
+    .make_comment {
         padding-top: 30px;
         padding-bottom: 30px;
-        -webkit-box-shadow: -1px -23px 28px 2px rgba(255,255,255,1);
-        -moz-box-shadow: -1px -23px 28px 2px rgba(255,255,255,1);
-        box-shadow: -1px -23px 28px 2px rgba(255,255,255,1);
+        -webkit-box-shadow: -1px -23px 28px 2px rgba(255, 255, 255, 1);
+        -moz-box-shadow: -1px -23px 28px 2px rgba(255, 255, 255, 1);
+        box-shadow: -1px -23px 28px 2px rgba(255, 255, 255, 1);
     }
-    .buttons{
+
+    .buttons {
         display: flex;
         align-items: center;
-        a{
+
+        a {
             padding: 5px;
         }
     }
-    .buttons .button{
+
+    .buttons .button {
         margin-bottom: 0;
+    }
+
+    .delete_post {
+        position: absolute;
+        padding: 20px;
+        right: 0;
+        top: 0;
+        cursor: pointer;
     }
 </style>
 

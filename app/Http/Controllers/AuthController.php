@@ -33,7 +33,7 @@ class AuthController extends Controller
     public function checkAuth()
     {
         if (Auth::check()){
-            return Auth::user()->name;
+            return Auth::user();
         }
     }
     public function logout(){

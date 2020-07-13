@@ -36,4 +36,16 @@ class PostsController extends Controller
         return Post::with('user')->get();
     }
 
+    public function deletePost(Request $request){
+
+
+        $user = Auth::user();
+        $post = Post::where('id', $request->id)->delete();
+
+        if ($user->id === $post->id) {
+            return $post->delete();
+        }
+
+    }
+
 }
