@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Services\Auth\AuthService;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -28,5 +29,16 @@ class AuthController extends Controller
         }
 
         return $this->responseAPI('Авторизация успешна', false, array_merge($authenticate->toArray(), $addResponse));
+    }
+    public function checkAuth()
+    {
+        if (Auth::check()){
+            return Auth::user()->name;
+        }
+    }
+    public function logout(){
+        if (Auth::check()){
+           return Auth::logout();
+        }
     }
 }

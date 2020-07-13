@@ -26,9 +26,10 @@ class PostService
         $request->validate([
             'message' => 'required|max:255'
         ]);
-        $id = Auth::user()->id;
+
         if (Auth::check())
         {
+            $id = Auth::user()->id;
             $Post = Post::create(array_merge(["user_id" => $id], $request->all()));
         }
         else{

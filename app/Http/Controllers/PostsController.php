@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Models\Posts\Post;
 use App\Services\Post\PostService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 
 class PostsController extends Controller

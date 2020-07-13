@@ -32,8 +32,13 @@
                 </b-field>
                 <div class="buttons">
                     <b-button type="is-link" @click="sendAction">Отправить</b-button>
-                    <a href="/auth">Вход</a>
-                    <a href="/register">Регистрация</a>
+                    <div v-if="!auth">
+                        <a href="/auth">Вход</a>
+                        <a href="/register">Регистрация</a>
+                    </div>
+                    <div v-if="auth">
+                        <a @click="logout">Выйти</a>
+                    </div>
                 </div>
                 <b-loading :active.sync="load"></b-loading>
             </div>
@@ -61,6 +66,7 @@
                 posts: [],
                 load: false,
                 register: false,
+                auth: false,
             }
         },
         methods: {
@@ -126,11 +132,36 @@
                         this.posts = response.data;
                     }
                 )
+            },
+            checkAuth: function () {
+                axios.post('auth', {}
+                ).then(response => {
+                    this.auth = response.data;
+                    console.log(this.auth);
+                    }
+                )
+            },
+            logout: function () {
+                axios.get('auth/logout', {}
+                ).then(response => {
+                        console.log(response.data);
+                        location.reload();
+                    }
+                )
+            },
+            deletePost: function () {
+                axios.get('posts/delete', {}
+                ).then(response => {
+                        console.log(response.data);
+                        location.reload();
+                    }
+                )
             }
         },
         mounted() {
             this.$refs.refPosts.scrollTop = this.$refs.refPosts.scrollHeight;
             this.updatePosts();
+            this.checkAuth();
             setInterval( () => {
                 this.updatePosts()
             }, 1000)
