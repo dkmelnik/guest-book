@@ -30,14 +30,14 @@ class PostService
         if (Auth::check())
         {
             $id = Auth::user()->id;
-            $Post = Post::create(array_merge(["user_id" => $id], $request->all()));
+            $post = Post::create(array_merge(["user_id" => $id], $request->all()));
         }
         else{
-            $Post = Post::create($request->all());
+            $post = Post::create($request->all());
         }
 
 
-        if (!$Post instanceof Post) {
+        if (!$post instanceof Post) {
             return false;
         }
         return true;

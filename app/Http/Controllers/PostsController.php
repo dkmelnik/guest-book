@@ -49,9 +49,9 @@ class PostsController extends Controller
         if ($user->id === $post->user_id && $diffTime <= 2) {
             $postQuery->delete();
             return $this->responseAPI('Комментарий удален', false);
-        }else{
-            return $this->responseAPI('Вы не можете удалить комментарий по истечении 2 часов', true);
         }
+            return $this->responseAPI('Вы не можете удалить комментарий по истечении 2 часов', true);
+
 
     }
 
@@ -65,9 +65,9 @@ class PostsController extends Controller
         if ($user->id === $post->user_id && $diffTime <= 2) {
             $post->update(['message' => $request->message]);
             return $this->responseAPI('Комментарий редактирован', false);
-        }else{
-            return $this->responseAPI('Вы не можете редактировать комментарий по истечении 2 часов', true);
         }
+            return $this->responseAPI('Вы не можете редактировать комментарий по истечении 2 часов', true);
+
 
     }
 
