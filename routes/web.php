@@ -19,6 +19,7 @@ Route::prefix('posts')->group(function () {
     Route::put('/', 'PostsController@send');
     Route::get('/', 'PostsController@getPosts')->name('posts');
     Route::put('/delete', 'PostsController@deletePost');
+    Route::put('/edit', 'PostsController@editPost');
 });
 
 

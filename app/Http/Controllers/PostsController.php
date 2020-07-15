@@ -40,12 +40,25 @@ class PostsController extends Controller
 
 
         $user = Auth::user();
-        $post = Post::where('id', $request->id)->delete();
+        $postQuery = Post::where('id', $request->id);
+        $post = $postQuery->first();
 
-        if ($user->id === $post->id) {
-            return $post->delete();
+        if ($user->id === $post->user_id) {
+            $postQuery->delete();
+            return $this->responseAPI('Комментарий удален', false);
         }
+        return $this->responseAPI('Вы не можете удалить комментарий', true);
+    }
+    public function editPost(Request $request){
+        $user = Auth::user();
+        $postQuery = Post::where('id', $request->id);
+        $post = $postQuery->first();
 
+        if ($user->id === $post->user_id) {
+            $post->update(['message' => $request->message]);
+            return $this->responseAPI('Комментарий редактирован', false);
+        }
+        return $this->responseAPI('Вы не можете редактировать комментарий', true);
     }
 
 }

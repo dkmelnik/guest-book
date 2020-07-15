@@ -17,6 +17,11 @@
                     Удалить
 
                 </div>
+                <div v-if="auth.id === post.user_id" class="edit_post" @click="editPost(post.message, post.id)">
+
+                    Редактировать
+
+                </div>
             </div>
         </section>
         <div class="fixed">
@@ -31,11 +36,15 @@
                     </b-message>
                 </div>
                 <b-field label="Оставьте Ваш комментарий" :type="post.message.state" :message="post.message.text">
+                    <b-button class="btn_chng" v-if="edit" @click="changeFlagEdit">Отменить редактирование</b-button>
                     <b-input maxlength="200" type="textarea" v-model="post.message.value"
                              :class="post.message.class"></b-input>
                 </b-field>
                 <div class="buttons">
-                    <b-button type="is-link" @click="sendAction">Отправить</b-button>
+
+                    <b-button v-if="edit" type="is-link" @click="editPostAction" key="edit">Редактировать</b-button>
+                    <b-button v-else-if="!edit" type="is-link" @click="sendAction">Отправить</b-button>
+
                     <div v-if="!auth">
                         <a href="/auth">Вход</a>
                         <a href="/register">Регистрация</a>
@@ -69,7 +78,9 @@
                 posts: [],
                 load: false,
                 register: false,
+                edit: false,
                 auth: false,
+                postId: ''
             }
         },
         methods: {
@@ -126,6 +137,9 @@
                 if (response.data.data.link) {
                     window.location.href = response.data.data.link;
                 }
+                if(this.edit === true){
+                    this.changeFlagEdit();
+                }
                 this.updatePosts();
                 this.reset();
             },
@@ -140,14 +154,12 @@
                 axios.post('auth', {}
                 ).then(response => {
                         this.auth = response.data;
-                        console.log(this.auth);
                     }
                 )
             },
             logout: function () {
                 axios.get('auth/logout', {}
                 ).then(response => {
-                        console.log(response.data);
                         location.reload();
                     }
                 )
@@ -158,8 +170,34 @@
                         id: $id
                     }
                 ).then(response => {
-                    console.log(response);
+                    this.responseSuccessAction(response);
+                }).catch(response => {
+                    this.responseErrorAction(response);
                 })
+            },
+            editPost: function ($message, $postId) {
+                this.postId = $postId;
+                console.log(this.postId);
+                this.post.message.value = $message;
+                this.edit = true;
+            },
+            editPostAction: function () {
+                this.load = true;
+                axios.put('posts/edit', {
+                    id: this.postId,
+                    message: this.post.message.value
+                }).then(response => {
+
+                    this.responseSuccessAction(response);
+
+                }).catch(response => {
+                    this.responseErrorAction(response);
+                })
+            },
+            changeFlagEdit:function () {
+                this.postId = '';
+                this.post.message.value = '';
+                this.edit = false;
             }
         },
         mounted() {
@@ -168,7 +206,7 @@
             this.checkAuth();
             setInterval(() => {
                 this.updatePosts()
-            }, 1000)
+            }, 6000)
         }
     }
 </script>
@@ -183,10 +221,6 @@
             padding-left: 50px;
             padding-right: 50px;
         }
-    }
-
-    .make_comment {
-
     }
 
     .post {
@@ -261,6 +295,24 @@
         right: 0;
         top: 0;
         cursor: pointer;
+        color: red;
+    }
+    .edit_post{
+        position: absolute;
+        padding: 20px;
+        right: 0;
+        bottom: 0;
+        cursor: pointer;
+        color: green;
+    }
+    .field.has-addons{
+        display: block!important;
+    }
+    .btn_chng{
+        margin-bottom: 16px;
+        border: none;
+        background: red;
+        color: white;
     }
 </style>
 
