@@ -107,6 +107,8 @@
                     this.post[key1].state = 'is-danger';
                     this.post[key1].class = 'animated shake';
                 }
+
+
                 this.$buefy.notification.open({
                     message: 'Проверьте правильность формы',
                     type: 'is-danger',
@@ -115,6 +117,7 @@
             },
             responseSuccessAction: function (response) {
                 this.load = false;
+                console.log(response.data.error);
                 for (let key in this.post) {
                     this.post[key].text = '';
                     this.post[key].state = 'is-success';
@@ -127,6 +130,7 @@
                         type: 'is-danger',
                         hasIcon: true
                     });
+                    this.changeFlagEdit();
                     return false;
                 }
                 this.$buefy.notification.open({
@@ -140,6 +144,7 @@
                 if(this.edit === true){
                     this.changeFlagEdit();
                 }
+
                 this.updatePosts();
                 this.reset();
             },
