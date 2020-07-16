@@ -25,6 +25,7 @@ class PostsController extends Controller
         $created = $service->handlerPost($request);
 
         if ($created) {
+
             return $this->responseAPI('Комментарий создан');
         }
         return $this->responseAPI('Ошибка в создании комментария');
@@ -43,10 +44,11 @@ class PostsController extends Controller
         $user = Auth::user();
         $postQuery = Post::where('id', $request->id);
         $post = $postQuery->first();
+        $sudo = $user->sudo;
 
         $diffTime = $this->diffTime($post);
 
-        if ($user->id === $post->user_id && $diffTime <= 2) {
+        if (($user->id === $post->user_id && $diffTime <= 2) || $sudo) {
             $postQuery->delete();
             return $this->responseAPI('Комментарий удален', false);
         }
@@ -59,10 +61,11 @@ class PostsController extends Controller
         $user = Auth::user();
         $postQuery = Post::where('id', $request->id);
         $post = $postQuery->first();
+        $sudo = $user->sudo;
 
         $diffTime = $this->diffTime($post);
 
-        if ($user->id === $post->user_id && $diffTime <= 2) {
+        if (($user->id === $post->user_id && $diffTime <= 2) || $sudo) {
             $post->update(['message' => $request->message]);
             return $this->responseAPI('Комментарий редактирован', false);
         }

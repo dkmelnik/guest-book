@@ -12,15 +12,11 @@
                 <div class="message">
                     {{post.message}}
                 </div>
-                <div v-if="auth.id === post.user_id" class="delete_post" @click="deletePost(post.id)">
-
+                <div v-if="auth.id === post.user_id || auth.sudo" class="delete_post" @click="deletePost(post.id)">
                     Удалить
-
                 </div>
-                <div v-if="auth.id === post.user_id" class="edit_post" @click="editPost(post.message, post.id)">
-
+                <div v-if="auth.id === post.user_id || auth.sudo" class="edit_post" @click="editPost(post.message, post.id)">
                     Редактировать
-
                 </div>
             </div>
         </section>
@@ -152,6 +148,7 @@
                 axios.get('posts', {}
                 ).then(response => {
                         this.posts = response.data;
+                        console.log(this.auth)
                     }
                 )
             },
@@ -211,7 +208,7 @@
             this.checkAuth();
             setInterval(() => {
                 this.updatePosts()
-            }, 6000)
+            }, 1000)
         }
     }
 </script>

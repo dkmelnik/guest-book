@@ -2,6 +2,7 @@
 
 namespace App\Models\Posts;
 
+use App\Casts\setDateAttribute;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,7 +24,9 @@ class Post extends Model
      * @var array
      */
     protected $casts = [
-        'created_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => setDateAttribute::class,
     ];
+
+
 
 }
