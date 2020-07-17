@@ -3,11 +3,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\NotifyEmailAdmin;
 use App\Models\Posts\Post;
 use App\Services\Post\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 
 class PostsController extends Controller
@@ -25,7 +27,8 @@ class PostsController extends Controller
         $created = $service->handlerPost($request);
 
         if ($created) {
-
+            $job = new NotifyEmailAdmin('У вас новый пост!', 'ml.dmitriymelnik@yandex.ru');
+            $this->dispatch($job);
             return $this->responseAPI('Комментарий создан');
         }
         return $this->responseAPI('Ошибка в создании комментария');
